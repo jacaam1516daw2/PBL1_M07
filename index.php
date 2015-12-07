@@ -5,32 +5,105 @@
     <title>Gráficos</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
 </head>
+
 
 <body>
     <?php
-    spl_autoload_register(function ($classe) {
-                                include $classe . '.php';
-                            });
-//allNoteAlumns();
-//cursNoteAlumns('DAW');
-//cursNoteAlumnsAssignature('DAW','PHP');
-echo "<form action='grafics.php' method='post'>
-<button type='submit' name='aceptar' value='allNoteAlumns'>allNoteAlumns</button>
-</form>";
-echo '<br>';
-echo "<form action='grafics.php' method='post'>
-<button type='submit' name='aceptar' value='cursNoteAlumns'>cursNoteAlumns</button>
-</form>";
-echo '<br>';
-echo "<form action='grafics.php' method='post'>
-<button type='submit' name='aceptar' value='cursNoteAlumnsAssignature'>cursNoteAlumnsAssignature</button>
-</form>";
+spl_autoload_register(function ($classe) {
+                            include $classe . '.php';
+                        });
 ?>
 
+        <form action='grafics.php' method='post'>
+            <div class="combo">
+                <h3>Graficos por parámetors</h3>
+                <select id="curso" class="selectpicker">
+                    <?php
+            try{
+                $gbd = new PDO ( 'mysql:host=localhost;dbname=ESCOLA_DB' , 'root' , 'adminuser' );
+                foreach( $gbd -> query ("SELECT NOM_CURS from CURS") as $fila ) {
+                   echo "<option>".$fila["NOM_CURS"]."</option>";
+                }
+                $gbd = null ;
+            } catch ( PDOException $e ) {
+                print "¡Error!: " . $e -> getMessage () . "<br/>" ;
+                die();
+            }
+            ?>
+                </select>
+                <select id="asignatura" class="selectpicker">
+                    <?php
+        try{
+            $gbd = new PDO ( 'mysql:host=localhost;dbname=ESCOLA_DB' , 'root' , 'adminuser' );
+            /*
+            foreach( $gbd -> query ("SELECT NOM_ASSIGNATURA FROM ASSIGNATURA WHERE CURS_ID IN
+            (SELECT ID_CURS FROM CURS WHERE NOM_CURS = ?") as $fila ) {
+            */
+            foreach( $gbd -> query ("SELECT NOM_ASSIGNATURA FROM ASSIGNATURA") as $fila ) {
+               echo "<option>".$fila["NOM_ASSIGNATURA"]."</option>";
+            }
+            $gbd = null ;
+        } catch ( PDOException $e ) {
+            print "¡Error!: " . $e -> getMessage () . "<br/>" ;
+            die();
+        }
+
+        ?>
+                </select>
+                <select id="alumno" class="selectpicker">
+                    <?php
+            try{
+                $gbd = new PDO ( 'mysql:host=localhost;dbname=ESCOLA_DB' , 'root' , 'adminuser' );
+                foreach( $gbd -> query ("SELECT NOM_ALUMNE FROM ALUMNE") as $fila ) {
+                   echo "<option>".$fila["NOM_ALUMNE"]."</option>";
+                }
+                $gbd = null ;
+            } catch ( PDOException $e ) {
+                print "¡Error!: " . $e -> getMessage () . "<br/>" ;
+                die();
+            }
+            ?>
+                </select>
+                <br>
+                <br>
+                <br>
+                <input id="parametros" name='aceptar' type='submit' value='Buscar'>
+            </div>
+            <!-- Inicio Botonera Lateral -->
+            <div id="botones">
+                <input id='allNoteAlumns' name='aceptar' type='submit' value='Todas las notas' class='btn btn-primary'>
+                <br>
+                <?php
+                try{
+                    $gbd = new PDO ( 'mysql:host=localhost;dbname=ESCOLA_DB' , 'root' , 'adminuser' );
+                    foreach( $gbd -> query ("SELECT NOM_CURS from CURS") as $fila ) {
+                        echo "<input id='cursNoteAlumns".$fila["NOM_CURS"]."' name='aceptar' type='submit' value='Notas Curso ".$fila["NOM_CURS"]."' class='btn btn-primary'>";
+                        echo "<br>";
+                    }
+                    $gbd = null ;
+                } catch ( PDOException $e ) {
+                    print "¡Error!: " . $e -> getMessage () . "<br/>" ;
+                    die();
+                }
+                try{
+                    $gbd = new PDO ( 'mysql:host=localhost;dbname=ESCOLA_DB' , 'root' , 'adminuser' );
+                    foreach( $gbd -> query ("SELECT ASI.NOM_ASSIGNATURA, C.NOM_CURS from ASSIGNATURA ASI INNER JOIN CURS C ON C.ID_CURS = ASI.CURS_ID ") as $fila ) {
+
+
+                        echo "<input id='cursNoteAlumnsAssignature".$fila["NOM_ASSIGNATURA"]."' name='aceptar' type='submit' value='Notas Curso ".$fila["NOM_CURS"]." Asignatura ".$fila["NOM_ASSIGNATURA"]."' class='btn btn-primary'>";
+                        echo "<br>";
+                    }
+                    $gbd = null ;
+                } catch ( PDOException $e ) {
+                    print "¡Error!: " . $e -> getMessage () . "<br/>" ;
+                    die();
+                }
+                ?>
+            </div>
+            <!-- FIN Botonera Lateral -->
+        </form>
 </body>
 
 </html>

@@ -1,25 +1,41 @@
 <?php
-
-    /*$array_notes =
-        [0, 1, 2, 3, 4,
-        5, 6, 7, 8, 9, 10];*/
-
-//allNoteAlumns();
-//cursNoteAlumns('DAW');
-//cursNoteAlumnsAssignature('DAW','PHP');
-
-
+$notasCurso = 'Notas Curso ';
 if (isset($_POST['aceptar'])) {
-    if ($_POST['aceptar']=='allNoteAlumns') {
+    $post = $_POST['aceptar'];
+    if ($post=='Todas las notas') {
         allNoteAlumns();
-    }else if ($_POST['aceptar']=='cursNoteAlumns') {
-        cursNoteAlumns('DAW');
-    }else if ($_POST['aceptar']=='cursNoteAlumnsAssignature') {
-        cursNoteAlumnsAssignature('DAW','PHP');
-    }else {
-
+    }else if(strstr($post, $notasCurso)){
+        $porciones = explode(" ", $post);
+        cursNoteAlumns($porciones[2]);
     }
 }
+
+/*
+* Funcion que nos devuelve las notas de todos los alumnos de un mismo curso de una asignatura
+* Parametros CURSO, ASIGNATURA
+* return array
+*/
+
+function buscarPorParametro($curs, $assign, $alumn){
+    $array_notes = [];
+    $mysqli = new mysqli
+    ( "localhost" , "root" , "adminuser" , "ESCOLA_DB");
+    if ($mysqli -> connect_errno) {
+        echo "problema al connectar MySQL: " . $mysqli -> connect_error;
+    }
+
+    $sentencia = $mysqli -> prepare("SELECT NOTA FROM NOTA WHERE CURS_ID IN (SELECT ID_CURS FROM CURS WHERE NOM_CURS = ? AND ASSIGNATURA_ID IN (SELECT ID_ASSIGNATURA FROM ASSIGNATURA WHERE NOM_ASSIGNATURA LIKE ?))");
+    $sentencia->bind_param("sss",$curs, $assign,$alumn);
+    $sentencia->execute();
+
+    $sentencia->bind_result($nota);
+    while ($sentencia->fetch())
+    {
+        array_push($array_notes, $nota);
+    }
+    declaraGlobals($array_notes);
+}
+
 /*
 * Funcion que nos devuelve las notas de todos los alumnos
 * Parametros
