@@ -8,6 +8,10 @@ if (isset($_POST['aceptar'])) {
         $porciones = explode(" ", $post);
         cursNoteAlumns($porciones[2]);
     }
+} else if (isset($_POST['grafico'])) {
+    $array_notes = [];
+    $array_notes = unserialize(stripslashes($_POST['grafico']));
+    declaraGlobals($array_notes);
 }
 
 /*
