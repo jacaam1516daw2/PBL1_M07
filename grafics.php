@@ -1,42 +1,23 @@
 <?php
+/*
+* Aqui recuperamos la EL post para saber
+* quien nos llama y los parametros que nos envia
+*/
 $notasCurso = 'Notas Curso ';
 if (isset($_POST['aceptar'])) {
     $post = $_POST['aceptar'];
     if ($post=='Todas las notas') {
         allNoteAlumns();
     }else if(strstr($post, $notasCurso)){
+        // aquí recuperamos el nombre del curso cortando
+        // la cadena y sabemos que siempre nos vendrá en la ultima posición.
         $porciones = explode(" ", $post);
         cursNoteAlumns($porciones[2]);
     }
 } else if (isset($_POST['grafico'])) {
     $array_notes = [];
+    //recuperamos las UFS que nos envian por array
     $array_notes = unserialize(stripslashes($_POST['grafico']));
-    declaraGlobals($array_notes);
-}
-
-/*
-* Funcion que nos devuelve las notas de todos los alumnos de un mismo curso de una asignatura
-* Parametros CURSO, ASIGNATURA
-* return array
-*/
-
-function buscarPorParametro($curs, $assign, $alumn){
-    $array_notes = [];
-    $mysqli = new mysqli
-    ( "localhost" , "root" , "adminuser" , "ESCOLA_DB");
-    if ($mysqli -> connect_errno) {
-        echo "problema al connectar MySQL: " . $mysqli -> connect_error;
-    }
-
-    $sentencia = $mysqli -> prepare("SELECT NOTA FROM NOTA WHERE CURS_ID IN (SELECT ID_CURS FROM CURS WHERE NOM_CURS = ? AND ASSIGNATURA_ID IN (SELECT ID_ASSIGNATURA FROM ASSIGNATURA WHERE NOM_ASSIGNATURA LIKE ?))");
-    $sentencia->bind_param("sss",$curs, $assign,$alumn);
-    $sentencia->execute();
-
-    $sentencia->bind_result($nota);
-    while ($sentencia->fetch())
-    {
-        array_push($array_notes, $nota);
-    }
     declaraGlobals($array_notes);
 }
 
