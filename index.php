@@ -20,6 +20,7 @@ spl_autoload_register(function ($classe) {
                 <h3>Graficos por parámetors</h3>
                 <select id="curso" name="curso" class="selectpicker">
                     <?php
+                    //Cargamos la combo con una consulta a la BD recuperando los nombres de los cursos
                         try{
                             $gbd = new PDO ( 'mysql:host=localhost;dbname=ESCOLA_DB' , 'root' , 'adminuser' );
                             foreach( $gbd -> query ("SELECT NOM_CURS from CURS") as $fila ) {
@@ -44,6 +45,8 @@ spl_autoload_register(function ($classe) {
                 <input id='allNoteAlumns' name='aceptar' type='submit' value='Todas las notas' class='btn btn-primary'>
                 <br>
                 <?php
+                //Cargamos los botones de la barra lateral de forma dinamica montando el componente input
+                //con una consulta a la BD recuperando los nombres de los cursos
                     try{
                         $gbd = new PDO ( 'mysql:host=localhost;dbname=ESCOLA_DB' , 'root' , 'adminuser' );
                         foreach( $gbd -> query ("SELECT NOM_CURS from CURS") as $fila ) {
@@ -55,6 +58,10 @@ spl_autoload_register(function ($classe) {
                         print "¡Error!: " . $e -> getMessage () . "<br/>" ;
                         die();
                     }
+
+                 //Cargamos los botones de la barra lateral de forma dinamica montando el componente input
+                //con una consulta a la BD recuperando los nombres de los cursos y de las asignatura
+                // EL boton es nombre curso y asignatura del curso
                     try{
                         $gbd = new PDO ( 'mysql:host=localhost;dbname=ESCOLA_DB' , 'root' , 'adminuser' );
                         foreach( $gbd -> query ("SELECT ASI.NOM_ASSIGNATURA, C.NOM_CURS from ASSIGNATURA ASI INNER JOIN CURS C ON C.ID_CURS = ASI.CURS_ID ") as $fila ) {

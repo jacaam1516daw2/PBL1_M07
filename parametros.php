@@ -47,6 +47,9 @@
                 </tfoot>
                 <tbody>
                     <?php
+                    // Cargamos el listado de los alumnos del curso selecionado previamente en el combo
+                    // a cada alumno le montamos el componente input para llamar al grafico.
+                    // se monta de forma dinamica
                     $mysqli = new mysqli
                     ( "localhost" , "root" , "adminuser" , "ESCOLA_DB");
                     if ($mysqli -> connect_errno) {
