@@ -12,41 +12,32 @@
 </head>
 
 <body>
-    <?php
-    spl_autoload_register(function ($classe) {
-     include $classe . '.php';
-    });
-
-    if (isset($_POST['parametros'])) {
-        $post = $_POST['parametros'];
-    }
-?>
-        <form action='grafics.php' method='post'>
-            <table id="tabalumnes" class="table table-striped table-bordered" cellspacing="0" width="50%">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Asignatura</th>
-                        <th>Nota</th>
-                        <th>UF1</th>
-                        <th>UF2</th>
-                        <th>UF3</th>
-                        <th>UF4</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Asignatura</th>
-                        <th>Nota</th>
-                        <th>UF1</th>
-                        <th>UF2</th>
-                        <th>UF3</th>
-                        <th>UF4</th>
-                    </tr>
-                </tfoot>
-                <tbody>
-                    <?php
+    <form action='grafics.php' method='post'>
+        <table id="tabalumnes" class="table table-striped table-bordered" cellspacing="0" width="50%">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Asignatura</th>
+                    <th>Nota</th>
+                    <th>UF1</th>
+                    <th>UF2</th>
+                    <th>UF3</th>
+                    <th>UF4</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Asignatura</th>
+                    <th>Nota</th>
+                    <th>UF1</th>
+                    <th>UF2</th>
+                    <th>UF3</th>
+                    <th>UF4</th>
+                </tr>
+            </tfoot>
+            <tbody>
+                <?php
                     // Cargamos el listado de los alumnos del curso selecionado previamente en el combo
                     // a cada alumno le montamos el componente input para llamar al grafico.
                     // se monta de forma dinamica
@@ -57,6 +48,8 @@
                     }
                     $curs = $_POST['curso'];
                     $sentencia = $mysqli -> prepare("SELECT AL.NOM_ALUMNE,
+                                                    AL.COGNOM1_ALUMNE,
+                                                    AL.COGNOM2_ALUMNE,
                                                     ASI.NOM_ASSIGNATURA,
                                                     NOTA.NOTA,
                                                     NOTA.UF1,
@@ -73,8 +66,7 @@
                                             WHERE NOM_CURS = ?");
                     $sentencia->bind_param("s",$curs);
                     $sentencia->execute();
-                    $sentencia->bind_result($nom_alumne, $nom_assignatura, $nota, $uf1, $uf2, $uf3, $uf4);
-                        $var = 'hola';
+                    $sentencia->bind_result($nom_alumne, $cognom1_alumne, $cognom2_alumne, $nom_assignatura, $nota, $uf1, $uf2, $uf3, $uf4);
                     while ($sentencia->fetch())
                     {
                         $idCol = [];
@@ -83,7 +75,7 @@
                         array_push($idCol, $uf3);
                         array_push($idCol, $uf4);
                         echo '<tr>
-                        <th>'.$nom_alumne.'</th>
+                        <th>'.$nom_alumne.' '.$cognom1_alumne.' '.$cognom2_alumne.'</th>
                         <th>'.$nom_assignatura.'</th>
                         <th>'.$nota.'</th>
                         <th>'.$uf1.'</th>
@@ -94,9 +86,9 @@
                         </tr>';
                     }
                 ?>
-                </tbody>
-            </table>
-        </form>
+            </tbody>
+        </table>
+    </form>
 </body>
 
 </html>

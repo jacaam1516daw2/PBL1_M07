@@ -97,3 +97,8 @@ select:hover {
     background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
     text-decoration: none;
 }
+
+.img {
+    height: 50px;
+    width: 50px;
+}

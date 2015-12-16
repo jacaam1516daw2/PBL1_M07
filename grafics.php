@@ -1,4 +1,16 @@
-<?php
+<!DOCTYPE html>
+<html lang="ca">
+
+<head>
+    <title>Gráficos</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <?php
 /*
 * Aqui recuperamos la EL post para saber
 * quien nos llama y los parametros que nos envia
@@ -19,6 +31,8 @@ if (isset($_POST['aceptar'])) {
     //recuperamos las UFS que nos envian por array
     $array_notes = unserialize(stripslashes($_POST['grafico']));
     declaraGlobals($array_notes);
+} else if (isset($_POST['guardar'])) {
+    guardarHistorico();
 }
 
 /*
@@ -246,8 +260,8 @@ function cursNoteAlumnsAssignature($curs, $assign){
         /*
          * Crida de les funcions que dibuixen el gràfic.
          */
-        dibuixaEix($draw, $strokeColor);
-        dibuixaBarres($draw, $strokeColor);
+        dibuixaEix($draw);
+        dibuixaBarres($draw);
 
         /*
          * Declaració de la imatge (objecte $imagick)
@@ -261,11 +275,15 @@ function cursNoteAlumnsAssignature($curs, $assign){
          */
         $imagick->drawImage($draw);
 
+        $imagick->setImageFormat ("png");
+        file_put_contents ("image/grafico.png", $imagick);
         /*
          * Misc.
          */
-        header("Content-Type: image/png");
-        echo $imagick->getImageBlob();
+        //header("Content-Type: image/png");
+       // echo $imagick->getImageBlob();
+
+        echo "<div id='container'><img src='/image/grafico.png'/></div>";
 
     }
 
@@ -308,7 +326,17 @@ function cursNoteAlumnsAssignature($curs, $assign){
         $GLOBALS['notes'] = $array_notes;
         $GLOBALS['alumnes'] = count($GLOBALS['notes']);
 
+        session_start();
+        $_SESSION["array_notes"]=$array_notes;
+
         inici();
     }
 
 ?>
+        <br>
+        <a href="index.php">
+            <input type='submit' value='Pagina principal' class='info btn-primary'>
+        </a>
+</body>
+
+</html>
