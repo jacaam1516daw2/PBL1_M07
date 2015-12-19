@@ -335,7 +335,7 @@ function cursNoteAlumnsAssignature($curs, $assign){
 ?>
         <br>
         <a href="index.php">
-            <input type='submit' value='Pagina principal' class='info btn-primary'>
+            <input type='submit' value='Página principal' class='info btn-primary'>
         </a>
 </body>
 

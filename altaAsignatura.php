@@ -2,7 +2,7 @@
 <html lang="ca">
 
 <head>
-    <title>Alta Alumno</title>
+    <title>Alta Asignatura</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css">
@@ -12,13 +12,11 @@
 <body>
     <form action='gestion.php' method='post'>
         <div class="combo">
-            <h3>Alta Alumno</h3>
+            <h3>Alta Asignatura</h3>
             <br> Nombre
             <input type="text" name="name">
-            <br> Apellido 1
-            <input type="text" name="ap1">
-            <br> Apellido 2
-            <input type="text" name="ap2">
+            <br> Profesor
+            <input type="text" name="prof">
             <br>
             <br> Curso
             <select id="curso" name="curso" class="selectpicker">
@@ -38,7 +36,7 @@
             </select>
             <br>
             <br>
-            <input id="altaAlumno" name='altaAlumno' type='submit' value='Guardar' class='info btn-primary'>
+            <input id="altaAsignatura" name='altaAsignatura' type='submit' value='Guardar' class='info btn-primary'>
         </div>
     </form>
     <a href="index.php">

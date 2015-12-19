@@ -2,7 +2,7 @@
 <html lang="ca">
 
 <head>
-    <title>Gráficos</title>
+    <title>Notas</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
@@ -60,6 +60,9 @@
             </tbody>
         </table>
     </form>
+    <a href="index.php">
+        <input type='submit' value='Página principal' class='info btn-primary'>
+    </a>
 </body>
 
 </html>

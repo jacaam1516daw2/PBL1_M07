@@ -89,6 +89,9 @@
             </tbody>
         </table>
     </form>
+    <a href="index.php">
+        <input type='submit' value='Página principal' class='info btn-primary'>
+    </a>
 </body>
 
 </html>

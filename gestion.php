@@ -10,7 +10,7 @@
 
 <body>
     <a href="index.php">
-        <input type='submit' value='Pagina principal' class='info btn-primary'>
+        <input type='submit' value='Página principal' class='info btn-primary'>
     </a>
 </body>
 
@@ -21,7 +21,13 @@ if (isset($_POST['altaCurso'])) {
     altaCurso();
 } else if (isset($_POST['altaAlumno'])) {
     altaAlumno();
+}else if (isset($_POST['altaAsignatura'])) {
+    altaAsignatura();
 }
+
+function notasAlumnos(){
+}
+
 
 /*
 * Funcion alta de alumnos
@@ -30,13 +36,6 @@ function altaAlumno(){
     $mysqli = new mysqli( "localhost" , "root" , "adminuser" , "ESCOLA_DB");
     if ($mysqli->connect_errno) {
         echo "Falló la conexión a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-    }
-
-    // Esta query nos devuelve el siguiente id de la tabla ya que las tablas no se han hecho autoincrementales
-    $id=0;
-    $resultat = $mysqli -> query("SELECT MAX(ID_ALUMNE)+1 as ID_ALUMNE from ALUMNE" );
-    while($fila=$resultat->fetch_assoc()){
-        $id = $fila["ID_ALUMNE"];
     }
 
     //recuperamos el ID de curso que estamos dando de alta al alumno
@@ -62,7 +61,7 @@ function altaAlumno(){
     $sentencia -> bindParam ( ':curs_id', $curs_id );
     $sentencia -> bindParam ( ':nom_alumne', $nom_alumne );
     $sentencia -> bindParam ( ':cognom1_alumne', $cognom1_alumne );
-    $sentencia -> bindParam ( ':cognom2_alumne', $cognom1_alumne );
+    $sentencia -> bindParam ( ':cognom2_alumne', $cognom2_alumne );
     $nom_alumne = $_POST['name'];
     $cognom1_alumne = $_POST['ap1'];
     $cognom2_alumne = $_POST['ap2'];
@@ -70,18 +69,6 @@ function altaAlumno(){
 }
 
 function altaCurso(){
-    $mysqli = new mysqli( "localhost" , "root" , "adminuser" , "ESCOLA_DB");
-    if ($mysqli->connect_errno) {
-        echo "Falló la conexión a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-    }
-
-    // Esta query nos devuelve el siguiente id de la tabla ya que las tablas no se han hecho autoincrementales
-    $id=0;
-    $resultat = $mysqli -> query("SELECT MAX(ID_CURS)+1 as ID_CURS from CURS" );
-    while($fila=$resultat->fetch_assoc()){
-        $id = $fila["ID_CURS"];
-    }
-
     try {
         $gbd = new PDO ( 'mysql:host=localhost;dbname=ESCOLA_DB' , 'root' , 'adminuser' );
     } catch ( Exception $e ) {
@@ -99,4 +86,38 @@ function altaCurso(){
     $sentencia -> execute ();
 }
 
+function altaAsignatura(){
+	$mysqli = new mysqli( "localhost" , "root" , "adminuser" , "ESCOLA_DB");
+    if ($mysqli->connect_errno) {
+        echo "Falló la conexión a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+    }
+
+    //recuperamos el ID de curso que estamos dando de alta al alumno
+    //para luego poder insertarlo
+    $curs_id = 0;
+    $sql = "SELECT ID_CURS from CURS where NOM_CURS = '".$_POST['curso']."'";
+    $resultat = $mysqli -> query($sql);
+    while($fila=$resultat->fetch_assoc()){
+        $curs_id = $fila["ID_CURS"];
+    }
+
+    try {
+        $gbd = new PDO ( 'mysql:host=localhost;dbname=ESCOLA_DB' , 'root' , 'adminuser' );
+    } catch ( Exception $e ) {
+        die( "problema de connexio: " . $e -> getMessage ());
+    }
+
+    //hacemos el insert de los datos que hemos recuperado del formulario
+    $sentencia = $gbd -> prepare ( "INSERT INTO ASSIGNATURA (NOM_ASSIGNATURA, NOM_PROFESSOR, CURS_ID)
+    VALUES (:nom_assignatura, :nom_professor, :curs_id)");
+
+    $sentencia -> bindParam ( ':curs_id', $curs_id);
+    $sentencia -> bindParam ( ':nom_assignatura', $nom_assignatura );
+    $sentencia -> bindParam ( ':nom_professor', $nom_professor );
+
+    $nom_assignatura = $_POST['name'];
+    $nom_professor = $_POST['prof'];
+    $sentencia -> execute ();
+
+}
 ?>

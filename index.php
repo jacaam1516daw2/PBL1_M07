@@ -10,16 +10,12 @@
 
 
 <body>
-    <?php
-spl_autoload_register(function ($classe) {
-                            include $classe . '.php';
-                        });
-?>
-        <form action='parametros.php' method='post'>
-            <div class="combo">
-                <h3>Graficos por parámetors</h3>
-                <select id="curso" name="curso" class="selectpicker">
-                    <?php
+    <form action='parametros.php' method='post'>
+        <div class="combo">
+            <h3>Graficos por parámetors</h3>
+            <!-- Inicio Busqueda por parametros -->
+            <select id="curso" name="curso" class="selectpicker">
+                <?php
                     //Cargamos la combo con una consulta a la BD recuperando los nombres de los cursos
                         try{
                             $gbd = new PDO ( 'mysql:host=localhost;dbname=ESCOLA_DB' , 'root' , 'adminuser' );
@@ -32,31 +28,37 @@ spl_autoload_register(function ($classe) {
                             die();
                         }
                     ?>
-                </select>
-                <br>
-                <br>
-                <br>
-                <input id="parametros" name='parametros' type='submit' value='Buscar' class='btn btn-primary'>
-            </div>
-        </form>
-        <div class="combo">
+            </select>
+            <!-- FIN Busqueda por parametros -->
             <br>
-            <form action='altaCurs.php' method='post'>
-                <input id="altaCurso" name='altaCurso' type='submit' value='Alta Curso' class='info btn-primary'>
-            </form>
-            <form action='altaAlumno.php' method='post'>
-                <input id="altaAlumno" name='altaAlumno' type='submit' value='Alta Alumno' class='info btn-primary'>
-            </form>
-            <form action='notas.php' method='post'>
-                <input id="notasAlumno" name='notasAlumno' type='submit' value='Notas Alumno' class='info btn-primary'>
-            </form>
+            <br>
+            <br>
+            <input id="parametros" name='parametros' type='submit' value='Buscar' class='btn btn-primary'>
         </div>
-        <form action='grafics.php' method='post'>
-            <!-- Inicio Botonera Lateral -->
-            <div id="botones">
-                <input id='allNoteAlumns' name='aceptar' type='submit' value='Todas las notas' class='btn btn-primary'>
-                <br>
-                <?php
+    </form>
+    <!-- Inicio Gestion alumnos -->
+    <div class="combo">
+        <br>
+        <form action='altaCurs.php' method='post'>
+            <input id="altaCurso" name='altaCurso' type='submit' value='Alta Curso' class='info btn-primary'>
+        </form>
+        <form action='altaAlumno.php' method='post'>
+            <input id="altaAlumno" name='altaAlumno' type='submit' value='Alta Alumno' class='info btn-primary'>
+        </form>
+        <form action='altaAsignatura.php' method='post'>
+            <input id="altaAsignatura" name='altaAsignatura' type='submit' value='Alta Asignatura' class='info btn-primary'>
+        </form>
+        <form action='notas.php' method='post'>
+            <input id="notasAlumno" name='notasAlumno' type='submit' value='Notas Alumno' class='info btn-primary'>
+        </form>
+    </div>
+    <!-- FIN Gestion alumnos -->
+    <form action='grafics.php' method='post'>
+        <!-- Inicio Botonera Lateral -->
+        <div id="botones">
+            <input id='allNoteAlumns' name='aceptar' type='submit' value='Todas las notas' class='btn btn-primary'>
+            <br>
+            <?php
                 //Cargamos los botones de la barra lateral de forma dinamica montando el componente input
                 //con una consulta a la BD recuperando los nombres de los cursos
                     try{
@@ -86,9 +88,9 @@ spl_autoload_register(function ($classe) {
                         die();
                     }
                 ?>
-            </div>
-            <!-- FIN Botonera Lateral -->
-        </form>
+        </div>
+        <!-- FIN Botonera Lateral -->
+    </form>
 </body>
 
 </html>

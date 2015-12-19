@@ -21,9 +21,12 @@
             <br>
             <br>
             <br>
-            <input id="altaCurso" name='altaCurso' type='submit' value='Guardar' class='btn btn-primary'>
+            <input id="altaCurso" name='altaCurso' type='submit' value='Guardar' class='info btn-primary'>
         </div>
     </form>
+    <a href="index.php">
+        <input type='submit' value='Página principal' class='info btn-primary'>
+    </a>
 </body>
 
 </html>
