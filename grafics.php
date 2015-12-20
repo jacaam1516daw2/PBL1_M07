@@ -18,8 +18,7 @@
 * Aqui recuperamos la EL post para saber
 * quien nos llama y los parametros que nos envia
 */
-$GLOBALS['ERROR'] = false;
-$GLOBALS['TRANSACCION'] = false;
+
 $notasCurso = 'Notas Curso ';
 if (isset($_POST['aceptar'])) {
     $post = $_POST['aceptar'];
@@ -33,11 +32,30 @@ if (isset($_POST['aceptar'])) {
     }
 } else if (isset($_POST['grafico'])) {
     $array_notes = [];
+    $porciones = explode(" ", $_POST['grafico']);
     //recuperamos las UFS que nos envian por array
-    $array_notes = unserialize(stripslashes($_POST['grafico']));
+    $array_notes = unserialize(stripslashes($porciones[1]));
     declaraGlobals($array_notes);
 } else if (isset($_POST['guardar'])) {
     guardarHistorico();
+}else if (isset($_POST['eliminarNotas'])) {
+    eliminarNotas();
+}
+
+function eliminarNotas(){
+ try {
+        $gbd = new PDO ( 'mysql:host=localhost;dbname=ESCOLA_DB' , 'root' , 'adminuser' );
+    } catch ( Exception $e ) {
+        echo "<br><br><br><br><h3>Error al guardar</h3>";
+        die( "problema de connexio: " . $e -> getMessage ());
+    }
+    //Tenemos activado DELETE ON CASCADE, al eliminar un curso se eliminan las assignaturas las notas etc
+    $sentencia = $gbd -> prepare ( "DELETE FROM NOTA WHERE ID_NOTA = :nota_id");
+    $sentencia -> bindParam ( ':nota_id', $nota_id);
+    $porciones = explode(" ", $_POST['eliminarNotas']);
+    $nota_id = $porciones[1];
+    $sentencia -> execute ();
+    echo "<br><br><br><br><h3>El registro se ha guradado correctamente</h3>";
 }
 
 /*
@@ -49,7 +67,6 @@ function allNoteAlumns(){
     $array_notes = [];
     $mysqli = new mysqli( "localhost" , "root" , "adminuser" , "ESCOLA_DB");
     if ($mysqli -> connect_errno) {
-        $GLOBALS['ERROR'] = true;
         echo "problema al connectar MySQL: " . $mysqli -> connect_error;
     }
     $resultat = $mysqli -> query("SELECT NOTA from NOTA" );
@@ -69,7 +86,6 @@ function cursNoteAlumns($curs){
     $array_notes = [];
     $mysqli = new mysqli( "localhost" , "root" , "adminuser" , "ESCOLA_DB");
     if ($mysqli -> connect_errno) {
-        $GLOBALS['ERROR'] = true;
         echo "problema al connectar MySQL: " . $mysqli -> connect_error;
     }
 
@@ -94,7 +110,6 @@ function cursNoteAlumnsAssignature($curs, $assign){
     $array_notes = [];
     $mysqli = new mysqli("localhost" , "root" , "adminuser" , "ESCOLA_DB");
     if ($mysqli -> connect_errno) {
-        $GLOBALS['ERROR'] = true;
         echo "problema al connectar MySQL: " . $mysqli -> connect_error;
     }
 
@@ -318,7 +333,6 @@ function cursNoteAlumnsAssignature($curs, $assign){
         $GLOBALS['fillColorA'] = '#90EE90';
         $GLOBALS['fillColorS'] = '#FF8383';
         $GLOBALS['backgroundColor'] = '#FFFFFF';
-        $GLOBALS['TRANSACCION'] = true;
         /*
          * Declaració de les proporcions del gràfic
          */
@@ -342,15 +356,6 @@ function cursNoteAlumnsAssignature($curs, $assign){
         <a href="index.php">
             <input type='submit' value='Página principal' class='info btn-primary'>
         </a>
-        <?php
-            if($GLOBALS['TRANSACCION'] == true){
-                if ($GLOBALS['ERROR'] == false){
-                 echo "<h3>El registro se ha guradado correctamente</h3>";
-                } else{
-                 echo "<h3>Ha habido un error al guardar el registro</h3>";
-                }
-            }
-        ?>
 </body>
 
 </html>

@@ -18,12 +18,14 @@
                 <tr>
                     <th>Nombre</th>
                     <th>Curs</th>
+                    <th>Gestión Notas</th>
                 </tr>
             </thead>
             <tfoot>
                 <tr>
                     <th>Nombre</th>
                     <th>Curs</th>
+                    <th>Gestión Notas</th>
                 </tr>
             </tfoot>
             <tbody>
@@ -53,7 +55,7 @@
                         echo "<tr>
                         <th>".$nom_alumne.' '.$cognom1_alumne.' '.$cognom2_alumne."</th>
                         <th>".$nom_curs."</th>
-                        <th><input name='notasAl' type='submit' value='Poner notas ".$id_alumne."' class='info btn-info'></th>
+                        <th><input name='notasAl' type='submit' value='Gestionar ".$id_alumne."' class='nota btn-info'></th>
                         </tr>";
                     }
                 ?>

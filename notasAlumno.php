@@ -36,7 +36,7 @@
 
                 $sentencia->bind_param("s", $id_alumne);
                 $porciones = explode(" ", $_POST['notasAl']);
-                $id_alumne = $porciones[2];
+                $id_alumne = $porciones[1];
                 $sentencia->execute();
                 $sentencia->bind_result($nom_assignatura, $id_assignatura, $nom_alumne, $cognom1_alumne, $cognom2_alumne);
 
@@ -52,16 +52,7 @@
                     <th>UF4</th>
                 </tr>
                 </thead>
-                <tfoot>
-                    <tr>
-                        <th>Asignatura</th>
-                        <th>Nota</th>
-                        <th>UF1</th>
-                        <th>UF2</th>
-                        <th>UF3</th>
-                        <th>UF4</th>
-                    </tr>
-                </tfoot>
+
                 <tbody>";
                 while ($sentencia->fetch())
                 {
@@ -74,12 +65,13 @@
                             <th><input type='text' name='uf4".$nom_assignatura.$id_assignatura."' size='2' maxlength='2'></th>
                         </tr>";
                 }
-                echo "<tbody></table>";
-                echo "<h4>Ficha Alumno: ".$nom_alumne.' '.$cognom1_alumne.' '.$cognom2_alumne."</h4>";
+                echo "</tbody><tfoot><tr><th colspan='6'><h4>Ficha Alumno: ".$nom_alumne.' '.$cognom1_alumne.' '.$cognom2_alumne."</h4></th></tr></tfoot>";
             ?>
-                <br>
-                <br>
+
+                </table>
                 <input id="saveNotasAlumne" name='saveNotasAlumne' type='submit' value='Guardar' class='info btn-primary'>
+                <br>
+                <br>
         </div>
     </form>
     <a href="index.php">

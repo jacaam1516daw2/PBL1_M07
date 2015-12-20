@@ -15,61 +15,82 @@
     <a href="index.php">
         <input type='submit' value='Página principal' class='info btn-primary'>
     </a>
-
-    <?php
-        if($GLOBALS['TRANSACCION'] == true){
-            if ($GLOBALS['ERROR'] == false){
-             echo "<h3>El registro se ha guradado correctamente</h3>";
-            } else{
-             echo "<h3>Ha habido un error al guardar el registro</h3>";
-            }
-        }
-    ?>
 </body>
 
 </html>
 
 <?php
-$GLOBALS['ERROR'] = false;
-$GLOBALS['TRANSACCION'] = false;
-
 if (isset($_POST['altaCurso'])) {
-    $GLOBALS['TRANSACCION'] = true;
     altaCurso();
+}else if (isset($_POST['eliminarAlumno'])) {
+    eliminarAlumno();
 }else if (isset($_POST['eliminarCurso'])) {
-    $GLOBALS['TRANSACCION'] = true;
     eliminarCurso();
+}else if (isset($_POST['eliminarAsignatura'])) {
+    eliminarAsignatura();
 } else if (isset($_POST['altaAlumno'])) {
-    $GLOBALS['TRANSACCION'] = true;
     altaAlumno();
 }else if (isset($_POST['altaAsignatura'])) {
-    $GLOBALS['TRANSACCION'] = true;
     altaAsignatura();
 }else if (isset($_POST['saveNotasAlumne'])) {
-    $GLOBALS['TRANSACCION'] = true;
     saveNotasAlumne();
+}
+
+
+
+function eliminarAlumno(){
+ try {
+        $gbd = new PDO ( 'mysql:host=localhost;dbname=ESCOLA_DB' , 'root' , 'adminuser' );
+    } catch ( Exception $e ) {
+        echo "<br><br><br><br><h3>Error al guardar</h3>";
+        die( "problema de connexio: " . $e -> getMessage ());
+    }
+    //Tenemos activado DELETE ON CASCADE, al eliminar un curso se eliminan las assignaturas las notas etc
+    $sentencia = $gbd -> prepare ( "DELETE FROM ALUMNE WHERE ID_ALUMNE = :alumno_id");
+    $sentencia -> bindParam ( ':alumno_id', $alumno_id);
+    $porciones = explode(" ", $_POST['eliminarAlumno']);
+    $alumno_id = $porciones[1];
+    $sentencia -> execute ();
+    echo "<br><br><br><br><h3>Transacción correcta</h3>";
+}
+
+function eliminarAsignatura(){
+ try {
+        $gbd = new PDO ( 'mysql:host=localhost;dbname=ESCOLA_DB' , 'root' , 'adminuser' );
+    } catch ( Exception $e ) {
+        echo "<br><br><br><br><h3>Error al guardar</h3>";
+        die( "problema de connexio: " . $e -> getMessage ());
+    }
+    //Tenemos activado DELETE ON CASCADE, al eliminar un curso se eliminan las assignaturas las notas etc
+    $sentencia = $gbd -> prepare ( "DELETE FROM ASSIGNATURA WHERE ID_ASSIGNATURA = :asignatura_id");
+    $sentencia -> bindParam ( ':asignatura_id', $asignatura_id);
+    $porciones = explode(" ", $_POST['eliminarAsignatura']);
+    $asignatura_id = $porciones[1];
+    $sentencia -> execute ();
+    echo "<br><br><br><br><h3>Transacción correcta</h3>";
 }
 
 function eliminarCurso(){
  try {
         $gbd = new PDO ( 'mysql:host=localhost;dbname=ESCOLA_DB' , 'root' , 'adminuser' );
     } catch ( Exception $e ) {
-        $GLOBALS['ERROR'] = true;
+        echo "<br><br><br><br><h3>Error al guardar</h3>";
         die( "problema de connexio: " . $e -> getMessage ());
     }
-    //Tenemos activado DELETE en CASCADE, al eliminar un curso se eliminan las assignaturas las notas etc
+    //Tenemos activado DELETE ON CASCADE, al eliminar un curso se eliminan las assignaturas las notas etc
     $sentencia = $gbd -> prepare ( "DELETE FROM CURS WHERE ID_CURS = :curs_id");
     $sentencia -> bindParam ( ':curs_id', $curs_id);
     $porciones = explode(" ", $_POST['eliminarCurso']);
     $curs_id = $porciones[1];
     $sentencia -> execute ();
+    echo "<br><br><br><br><h3>Transacción correcta</h3>";
 }
 
 function saveNotasAlumne(){
     $mysqli = new mysqli( "localhost" , "root" , "adminuser" , "ESCOLA_DB");
     if ($mysqli -> connect_errno) {
+        echo "<br><br><br><br><h3>Error al guardar</h3>";
         echo "problema al connectar MySQL: " . $mysqli -> connect_error;
-        $GLOBALS['ERROR'] = true;
     }
 
     $sentencia = $mysqli -> prepare("SELECT ASS.ID_ASSIGNATURA,
@@ -96,14 +117,14 @@ function saveNotasAlumne(){
         $uf4 = $_POST['uf4'.$nom_assignatura.$id_assignatura];
         guardaNota($nota, $uf1, $uf2, $uf3, $uf4, $id_assignatura, $id_alumne, $curs_id);
     }
-
+    echo "<br><br><br><br><h3>Transacción correcta</h3>";
 }
 
 function guardaNota($nota, $uf1, $uf2, $uf3, $uf4, $id_assignatura, $id_alumne, $curs_id){
     try {
         $gbd = new PDO ( 'mysql:host=localhost;dbname=ESCOLA_DB' , 'root' , 'adminuser' );
     } catch ( Exception $e ) {
-        $GLOBALS['ERROR'] = true;
+        echo "<br><br><br><br><h3>Error al guardar</h3>";
         die( "problema de connexio: " . $e -> getMessage ());
     }
 
@@ -126,7 +147,7 @@ function guardaNota($nota, $uf1, $uf2, $uf3, $uf4, $id_assignatura, $id_alumne, 
 function altaAlumno(){
     $mysqli = new mysqli( "localhost" , "root" , "adminuser" , "ESCOLA_DB");
     if ($mysqli->connect_errno) {
-        $GLOBALS['ERROR'] = true;
+        echo "<br><br><br><br><h3>Error al guardar</h3>";
         echo "Falló la conexión a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
     }
 
@@ -142,7 +163,7 @@ function altaAlumno(){
     try {
         $gbd = new PDO ( 'mysql:host=localhost;dbname=ESCOLA_DB' , 'root' , 'adminuser' );
     } catch ( Exception $e ) {
-        $GLOBALS['ERROR'] = true;
+        echo "<br><br><br><br><h3>Error al guardar</h3>";
         die( "problema de connexio: " . $e -> getMessage ());
     }
 
@@ -159,13 +180,14 @@ function altaAlumno(){
     $cognom1_alumne = $_POST['ap1'];
     $cognom2_alumne = $_POST['ap2'];
     $sentencia -> execute ();
+    echo "<br><br><br><br><br><br><br><br><h3>Transacción correcta</h3>";
 }
 
 function altaCurso(){
     try {
         $gbd = new PDO ( 'mysql:host=localhost;dbname=ESCOLA_DB' , 'root' , 'adminuser' );
     } catch ( Exception $e ) {
-        $GLOBALS['ERROR'] = true;
+        echo "<br><br><br><br><h3>Error al guardar</h3>";
         die( "problema de connexio: " . $e -> getMessage ());
     }
 
@@ -178,12 +200,13 @@ function altaCurso(){
     $nom_curs = $_POST['nameCurs'];
     $nom_responsable = $_POST['responsable'];
     $sentencia -> execute ();
+    echo "<br><br><br><br><h3>Transacción correcta</h3>";
 }
 
 function altaAsignatura(){
 	$mysqli = new mysqli( "localhost" , "root" , "adminuser" , "ESCOLA_DB");
     if ($mysqli->connect_errno) {
-        $GLOBALS['ERROR'] = true;
+        echo "<br><br><br><br><h3>Error al guardar</h3>";
         echo "Falló la conexión a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
     }
 
@@ -199,7 +222,7 @@ function altaAsignatura(){
     try {
         $gbd = new PDO ( 'mysql:host=localhost;dbname=ESCOLA_DB' , 'root' , 'adminuser' );
     } catch ( Exception $e ) {
-        $GLOBALS['ERROR'] = true;
+        echo "<br><br><br><br><h3>Error al guardar</h3>";
         die( "problema de connexio: " . $e -> getMessage ());
     }
 
@@ -214,5 +237,6 @@ function altaAsignatura(){
     $nom_assignatura = $_POST['name'];
     $nom_professor = $_POST['prof'];
     $sentencia -> execute ();
+    echo "<br><br><br><br><h3>Transacción correcta</h3>";
 }
 ?>

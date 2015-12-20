@@ -2,7 +2,7 @@
 <html lang="ca">
 
 <head>
-    <title>Alta Curs</title>
+    <title>Asignatura</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
@@ -15,37 +15,58 @@
 <body>
     <form action='gestion.php' method='post'>
         <div class="combo">
-            <h3>Cursos</h3>
+            <h3>Asignatura</h3>
+            <br>
             <table class='table table-striped table-bordered'>
                 <tr>
-                    <th>Nombre Curso</th>
+                    <th>Asignatura</th>
                     <th>
-                        <input type="text" name="nameCurs">
+                        <input type="text" name="name">
                     </th>
                 </tr>
                 <tr>
-                    <th> Nombre Responsable</th>
+                    <th>Profesor</th>
                     <th>
-                        <input type="text" name="responsable">
+                        <input type="text" name="prof">
+                    </th>
+                </tr>
+                <tr>
+                    <th>Curso</th>
+                    <th>
+                        <select id="curso" name="curso" class="selectpicker">
+                            <?php
+                    //Cargamos la combo con una consulta a la BD recuperando los nombres de los cursos
+                        try{
+                            $gbd = new PDO ( 'mysql:host=localhost;dbname=ESCOLA_DB' , 'root' , 'adminuser' );
+                            foreach( $gbd -> query ("SELECT NOM_CURS from CURS") as $fila ) {
+                               echo "<option>".$fila["NOM_CURS"]."</option>";
+                            }
+                            $gbd = null ;
+                        } catch ( PDOException $e ) {
+                            print "¡Error!: " . $e -> getMessage () . "<br/>" ;
+                            die();
+                        }
+                    ?>
+                        </select>
                     </th>
                 </tr>
             </table>
             <br>
-            <input id="curso" name='altaCurso' type='submit' value='Guardar' class='info btn-primary'>
+            <input id="altaAsignatura" name='altaAsignatura' type='submit' value='Guardar' class='info btn-primary'>
             <br>
-            <h3>Cursos</h3>
+            <h3>Asignaturas</h3>
             <!-- Inicio Busqueda por parametros -->
             <table class='table table-striped table-bordered'>
                 <thead>
                     <tr>
-                        <th>Curso</th>
+                        <th>Asignatura</th>
                         <th>Responsapble</th>
                         <th>Eliminar</th>
                     </tr>
                 </thead>
                 <tfoot>
                     <tr>
-                        <th>Curso</th>
+                        <th>Asignatura</th>
                         <th>Responsable</th>
                         <th>Eliminar</th>
                     </tr>
@@ -54,8 +75,8 @@
                     <?php
                         try{
                             $gbd = new PDO ( 'mysql:host=localhost;dbname=ESCOLA_DB' , 'root' , 'adminuser' );
-                            foreach( $gbd -> query ("SELECT NOM_CURS, NOM_RESPONSABLE, ID_CURS FROM CURS") as $fila ) {
-                               echo "<tr><th>".$fila["NOM_CURS"]."</th><th>".$fila["NOM_RESPONSABLE"]."</th><th><input id='eliminarCurso' name='eliminarCurso' type='submit' value='Eliminar ".$fila["ID_CURS"]."' class='delete btn-primary'></th><tr>";
+                            foreach( $gbd -> query ("SELECT ID_ASSIGNATURA, NOM_ASSIGNATURA, NOM_PROFESSOR FROM ASSIGNATURA") as $fila ) {
+                               echo "<tr><th>".$fila["NOM_ASSIGNATURA"]."</th><th>".$fila["NOM_PROFESSOR"]."</th><th><input id='eliminarAsignatura' name='eliminarAsignatura' type='submit' value='Eliminar ".$fila["ID_ASSIGNATURA"]."' class='delete btn-primary'></th><tr>";
                             }
                             $gbd = null ;
                         } catch ( PDOException $e ) {

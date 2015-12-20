@@ -13,12 +13,18 @@
 
 
 <body>
-    <form action='parametros.php' method='post'>
-        <div class="combo">
-            <h3>Graficos por parámetors</h3>
-            <!-- Inicio Busqueda por parametros -->
-            <select id="curso" name="curso" class="selectpicker">
-                <?php
+    <div class="combo">
+        <form action='parametros.php' method='post'>
+            <table class='table table-striped table-bordered'>
+                <tr>
+                    <th>
+                        <h3>Graficos por parámetors</h3></th>
+                    <!-- Inicio Busqueda por parametros -->
+                </tr>
+                <tr>
+                    <th>
+                        <select id="curso" name="curso" class="selectpicker">
+                            <?php
                     //Cargamos la combo con una consulta a la BD recuperando los nombres de los cursos
                         try{
                             $gbd = new PDO ( 'mysql:host=localhost;dbname=ESCOLA_DB' , 'root' , 'adminuser' );
@@ -31,33 +37,59 @@
                             die();
                         }
                     ?>
-            </select>
-            <!-- FIN Busqueda por parametros -->
-            <br>
-            <br>
-            <br>
-            <input id="parametros" name='parametros' type='submit' value='Buscar' class='btn btn-primary'>
-        </div>
-    </form>
-    <!-- Inicio Gestion alumnos -->
-    <div class="combo">
+                        </select>
+                    </th>
+                </tr>
+
+                <!-- FIN Busqueda por parametros -->
+                <tr>
+                    <th>
+                        <input id="parametros" name='parametros' type='submit' value='Buscar' class='info btn-primary'>
+                    </th>
+                </tr>
+            </table>
+        </form>
+        <!-- Inicio Gestion alumnos -->
+
         <br>
-        <form action='curso.php' method='post'>
-            <input id="curso" name='curso' type='submit' value='Cursos' class='info btn-primary'>
-        </form>
-        <form action='altaAlumno.php' method='post'>
-            <input id="altaAlumno" name='altaAlumno' type='submit' value='Alta Alumno' class='info btn-primary'>
-        </form>
-        <form action='altaAsignatura.php' method='post'>
-            <input id="altaAsignatura" name='altaAsignatura' type='submit' value='Alta Asignatura' class='info btn-primary'>
-        </form>
-        <form action='notas.php' method='post'>
-            <input id="notasAlumno" name='notasAlumno' type='submit' value='Notas Alumno' class='info btn-primary'>
-        </form>
+        <table class='table table-striped table-bordered'>
+            <tr>
+                <th>
+                    <h3>Gestión de la escuela</h3></th>
+            </tr>
+            <tr>
+                <th>
+                    <form action='curso.php' method='post'>
+                        <input id="curso" name='curso' type='submit' value='Cursos' class='info btn-primary'>
+                    </form>
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    <form action='asignatura.php' method='post'>
+                        <input id="asignatura" name='asignatura' type='submit' value='Asignaturas' class='info btn-primary'>
+                    </form>
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    <form action='alumno.php' method='post'>
+                        <input id="alumno" name='alumno' type='submit' value='Alumnos' class='info btn-primary'>
+                    </form>
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    <form action='notas.php' method='post'>
+                        <input id="notasAlumno" name='notasAlumno' type='submit' value='Notas' class='info btn-primary'>
+                    </form>
+                </th>
+            </tr>
+        </table>
     </div>
     <!-- FIN Gestion alumnos -->
-    <form action='grafics.php' method='post'>
-        <!-- Inicio Botonera Lateral -->
+    <!-- Inicio Botonera Lateral -->
+    <form action='grafics.php' method='post' class="botonera">
         <div id="botones">
             <input id='allNoteAlumns' name='aceptar' type='submit' value='Todas las notas' class='btn btn-primary'>
             <br>

@@ -23,6 +23,8 @@
                     <th>UF2</th>
                     <th>UF3</th>
                     <th>UF4</th>
+                    <th>Gráfico</th>
+                    <th>Eliminar Notas</th>
                 </tr>
             </thead>
             <tfoot>
@@ -34,6 +36,8 @@
                     <th>UF2</th>
                     <th>UF3</th>
                     <th>UF4</th>
+                    <th>Gráfico</th>
+                    <th>Eliminar Notas</th>
                 </tr>
             </tfoot>
             <tbody>
@@ -55,7 +59,8 @@
                                                     NOTA.UF1,
                                                     NOTA.UF2,
                                                     NOTA.UF3,
-                                                    NOTA.UF4
+                                                    NOTA.UF4,
+                                                    NOTA.ID_NOTA
                                             FROM NOTA NOTA
                                             INNER JOIN CURS C
                                             ON NOTA.CURS_ID = C.ID_CURS
@@ -66,7 +71,7 @@
                                             WHERE NOM_CURS = ?");
                     $sentencia->bind_param("s",$curs);
                     $sentencia->execute();
-                    $sentencia->bind_result($nom_alumne, $cognom1_alumne, $cognom2_alumne, $nom_assignatura, $nota, $uf1, $uf2, $uf3, $uf4);
+                    $sentencia->bind_result($nom_alumne, $cognom1_alumne, $cognom2_alumne, $nom_assignatura, $nota, $uf1, $uf2, $uf3, $uf4, $id_nota);
                     while ($sentencia->fetch())
                     {
                         $idCol = [];
@@ -74,16 +79,17 @@
                         array_push($idCol, $uf2);
                         array_push($idCol, $uf3);
                         array_push($idCol, $uf4);
-                        echo '<tr>
-                        <th>'.$nom_alumne.' '.$cognom1_alumne.' '.$cognom2_alumne.'</th>
-                        <th>'.$nom_assignatura.'</th>
-                        <th>'.$nota.'</th>
-                        <th>'.$uf1.'</th>
-                        <th>'.$uf2.'</th>
-                        <th>'.$uf3.'</th>
-                        <th>'.$uf4.'</th>
-                        <th><input name="grafico" type="submit" value='.serialize($idCol).' class="info btn-info"></th>
-                        </tr>';
+                        echo "<tr>
+                            <th>".$nom_alumne." ".$cognom1_alumne." ".$cognom2_alumne."</th>
+                            <th>".$nom_assignatura."</th>
+                            <th>".$nota."</th>
+                            <th>".$uf1."</th>
+                            <th>".$uf2."</th>
+                            <th>".$uf3."</th>
+                            <th>".$uf4."</th>
+                            <th><input name='grafico' type='submit' value='Grafico ".serialize($idCol)."' class='grafic btn-info'></th>
+                            <th><input name='eliminarNotas' type='submit' value='Eliminar ".$id_nota."' class='delete btn-info'></th>
+                        </tr>";
                     }
                 ?>
             </tbody>
