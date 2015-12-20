@@ -18,6 +18,8 @@
 * Aqui recuperamos la EL post para saber
 * quien nos llama y los parametros que nos envia
 */
+$GLOBALS['ERROR'] = false;
+$GLOBALS['TRANSACCION'] = false;
 $notasCurso = 'Notas Curso ';
 if (isset($_POST['aceptar'])) {
     $post = $_POST['aceptar'];
@@ -45,9 +47,9 @@ if (isset($_POST['aceptar'])) {
 */
 function allNoteAlumns(){
     $array_notes = [];
-    $mysqli = new mysqli
-    ( "localhost" , "root" , "adminuser" , "ESCOLA_DB");
+    $mysqli = new mysqli( "localhost" , "root" , "adminuser" , "ESCOLA_DB");
     if ($mysqli -> connect_errno) {
+        $GLOBALS['ERROR'] = true;
         echo "problema al connectar MySQL: " . $mysqli -> connect_error;
     }
     $resultat = $mysqli -> query("SELECT NOTA from NOTA" );
@@ -65,9 +67,9 @@ function allNoteAlumns(){
 */
 function cursNoteAlumns($curs){
     $array_notes = [];
-    $mysqli = new mysqli
-    ( "localhost" , "root" , "adminuser" , "ESCOLA_DB");
+    $mysqli = new mysqli( "localhost" , "root" , "adminuser" , "ESCOLA_DB");
     if ($mysqli -> connect_errno) {
+        $GLOBALS['ERROR'] = true;
         echo "problema al connectar MySQL: " . $mysqli -> connect_error;
     }
 
@@ -90,9 +92,9 @@ function cursNoteAlumns($curs){
 */
 function cursNoteAlumnsAssignature($curs, $assign){
     $array_notes = [];
-    $mysqli = new mysqli
-    ( "localhost" , "root" , "adminuser" , "ESCOLA_DB");
+    $mysqli = new mysqli("localhost" , "root" , "adminuser" , "ESCOLA_DB");
     if ($mysqli -> connect_errno) {
+        $GLOBALS['ERROR'] = true;
         echo "problema al connectar MySQL: " . $mysqli -> connect_error;
     }
 
@@ -117,7 +119,7 @@ function cursNoteAlumnsAssignature($curs, $assign){
      *
      */
 
-    function dibuixaEix($draw, $strokeColor) {
+    function dibuixaEix($draw) {
 
         /*
          * Declaració de les variables de l'eix.
@@ -173,7 +175,7 @@ function cursNoteAlumnsAssignature($curs, $assign){
      *
      */
 
-    function dibuixaBarres($draw, $strokeColor) {
+    function dibuixaBarres($draw) {
 
         /*
          * Declaració de les variables apuntadores al vector global.
@@ -316,7 +318,7 @@ function cursNoteAlumnsAssignature($curs, $assign){
         $GLOBALS['fillColorA'] = '#90EE90';
         $GLOBALS['fillColorS'] = '#FF8383';
         $GLOBALS['backgroundColor'] = '#FFFFFF';
-
+        $GLOBALS['TRANSACCION'] = true;
         /*
          * Declaració de les proporcions del gràfic
          */
@@ -340,6 +342,15 @@ function cursNoteAlumnsAssignature($curs, $assign){
         <a href="index.php">
             <input type='submit' value='Página principal' class='info btn-primary'>
         </a>
+        <?php
+            if($GLOBALS['TRANSACCION'] == true){
+                if ($GLOBALS['ERROR'] == false){
+                 echo "<h3>El registro se ha guradado correctamente</h3>";
+                } else{
+                 echo "<h3>Ha habido un error al guardar el registro</h3>";
+                }
+            }
+        ?>
 </body>
 
 </html>

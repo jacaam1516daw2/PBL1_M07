@@ -16,7 +16,7 @@
     <form action='gestion.php' method='post'>
         <div class="combo">
             <h3>Alta Asignatura</h3>
-            <br> Nombre
+            <br> Asignatura
             <input type="text" name="name">
             <br> Profesor
             <input type="text" name="prof">

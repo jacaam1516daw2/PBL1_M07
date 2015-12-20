@@ -42,8 +42,8 @@
     <!-- Inicio Gestion alumnos -->
     <div class="combo">
         <br>
-        <form action='altaCurs.php' method='post'>
-            <input id="altaCurso" name='altaCurso' type='submit' value='Alta Curso' class='info btn-primary'>
+        <form action='curso.php' method='post'>
+            <input id="curso" name='curso' type='submit' value='Cursos' class='info btn-primary'>
         </form>
         <form action='altaAlumno.php' method='post'>
             <input id="altaAlumno" name='altaAlumno' type='submit' value='Alta Alumno' class='info btn-primary'>
