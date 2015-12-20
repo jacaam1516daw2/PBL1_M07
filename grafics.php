@@ -20,24 +20,29 @@
 */
 
 $notasCurso = 'Notas Curso ';
+$find = 'Asignatura ';
 if (isset($_POST['aceptar'])) {
     $post = $_POST['aceptar'];
+    $assig = strpos($post,$find);
+
     if ($post=='Todas las notas') {
         allNoteAlumns();
+    } else if($assig===0){
+        $porciones = explode(" ", $post);
+        cursNoteAlumnsAssignature($porciones[1], $porciones[2]);
     }else if(strstr($post, $notasCurso)){
         // aquí recuperamos el nombre del curso cortando
         // la cadena y sabemos que siempre nos vendrá en la ultima posición.
         $porciones = explode(" ", $post);
         cursNoteAlumns($porciones[2]);
     }
+
 } else if (isset($_POST['grafico'])) {
     $array_notes = [];
     $porciones = explode(" ", $_POST['grafico']);
     //recuperamos las UFS que nos envian por array
     $array_notes = unserialize(stripslashes($porciones[1]));
     declaraGlobals($array_notes);
-} else if (isset($_POST['guardar'])) {
-    guardarHistorico();
 }else if (isset($_POST['eliminarNotas'])) {
     eliminarNotas();
 }
@@ -69,8 +74,10 @@ function allNoteAlumns(){
     if ($mysqli -> connect_errno) {
         echo "problema al connectar MySQL: " . $mysqli -> connect_error;
     }
+    //$resultat = $mysqli -> query("SELECT NOTA, NOM_ALUMNE, COGNOM1_ALUMNE,  COGNOM2_ALUMNE from NOTA INNER JOIN ALUMNE ON ALUMNE_ID = ID_ALUMNE" );
     $resultat = $mysqli -> query("SELECT NOTA from NOTA" );
     while($fila=$resultat->fetch_assoc()){
+        //$array_notes[$fila["NOM_ALUMNE"].' '.$fila["COGNOM1_ALUMNE"].' '.$fila["COGNOM2_ALUMNE"]] = $fila["NOTA"];
         array_push($array_notes, $fila["NOTA"]);
     }
    declaraGlobals($array_notes);
@@ -89,13 +96,23 @@ function cursNoteAlumns($curs){
         echo "problema al connectar MySQL: " . $mysqli -> connect_error;
     }
 
-    $sentencia = $mysqli -> prepare("SELECT NOTA FROM NOTA WHERE CURS_ID IN (SELECT ID_CURS FROM CURS WHERE NOM_CURS = ?)" );
+    $sentencia = $mysqli -> prepare("SELECT N.NOTA,
+                                            AL.NOM_ALUMNE,
+                                            AL.COGNOM1_ALUMNE,
+                                            AL.COGNOM2_ALUMNE
+                                    FROM NOTA N
+                                    INNER JOIN ALUMNE AL
+                                        ON N.ALUMNE_ID = AL.ID_ALUMNE
+                                    INNER JOIN CURS C
+                                        ON C.ID_CURS = N.CURS_ID
+                                    WHERE C.NOM_CURS = ?");
     $sentencia->bind_param("s",$curs);
     $sentencia->execute();
 
-    $sentencia->bind_result($nota);
+    $sentencia->bind_result($nota, $nom_alumne, $cognom1_alumne, $cognom2_alumne);
     while ($sentencia->fetch())
     {
+        //$array_notes[$nom_alumne.' '.$cognom1_alumne.' '.$cognom2_alumne] = $nota;
         array_push($array_notes, $nota);
     }
     declaraGlobals($array_notes);
@@ -106,18 +123,30 @@ function cursNoteAlumns($curs){
 * Parametros CURSO, ASIGNATURA
 * return array
 */
-function cursNoteAlumnsAssignature($curs, $assign){
+function cursNoteAlumnsAssignature($assign, $curs){
     $array_notes = [];
     $mysqli = new mysqli("localhost" , "root" , "adminuser" , "ESCOLA_DB");
     if ($mysqli -> connect_errno) {
         echo "problema al connectar MySQL: " . $mysqli -> connect_error;
     }
-
-    $sentencia = $mysqli -> prepare("SELECT NOTA FROM NOTA WHERE CURS_ID IN (SELECT ID_CURS FROM CURS WHERE NOM_CURS = ? AND ASSIGNATURA_ID IN (SELECT ID_ASSIGNATURA FROM ASSIGNATURA WHERE NOM_ASSIGNATURA LIKE ?))");
+    $porciones = explode(" ", $_POST['grafico']);
+    $sentencia = $mysqli -> prepare("SELECT N.NOTA,
+                                            AL.NOM_ALUMNE,
+                                            AL.COGNOM1_ALUMNE,
+                                            AL.COGNOM2_ALUMNE
+                                    FROM NOTA N
+                                    INNER JOIN ALUMNE AL
+                                        ON N.ALUMNE_ID = AL.ID_ALUMNE
+                                    INNER JOIN CURS C
+                                        ON C.ID_CURS = N.CURS_ID
+                                    INNER JOIN ASSIGNATURA ASS
+	                                   ON ASS.CURS_ID = N.CURS_ID
+                                    WHERE C.NOM_CURS = ?
+                                    AND ASS.NOM_ASSIGNATURA = ?");
     $sentencia->bind_param("ss",$curs, $assign);
     $sentencia->execute();
 
-    $sentencia->bind_result($nota);
+    $sentencia->bind_result($nota, $nom_alumne, $cognom1_alumne, $cognom2_alumne);
     while ($sentencia->fetch())
     {
         array_push($array_notes, $nota);
