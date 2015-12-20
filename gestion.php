@@ -4,7 +4,10 @@
 <head>
     <title>Alta</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -17,17 +20,69 @@
 </html>
 
 <?php
+
 if (isset($_POST['altaCurso'])) {
     altaCurso();
 } else if (isset($_POST['altaAlumno'])) {
     altaAlumno();
 }else if (isset($_POST['altaAsignatura'])) {
     altaAsignatura();
+}else if (isset($_POST['saveNotasAlumne'])) {
+    saveNotasAlumne();
 }
 
-function notasAlumnos(){
+function saveNotasAlumne(){
+    $mysqli = new mysqli( "localhost" , "root" , "adminuser" , "ESCOLA_DB");
+    if ($mysqli -> connect_errno) {
+        echo "problema al connectar MySQL: " . $mysqli -> connect_error;
+    }
+
+    $sentencia = $mysqli -> prepare("SELECT ASS.ID_ASSIGNATURA,
+                                            ASS.NOM_ASSIGNATURA,
+                                            ASS.CURS_ID
+                                    FROM ASSIGNATURA ASS
+                                    INNER JOIN CURS C
+                                        ON ASS.CURS_ID = C.ID_CURS
+                                    INNER JOIN ALUMNE AL
+                                        ON AL.CURS_ID = C.ID_CURS
+                                    WHERE AL.ID_ALUMNE = ?");
+
+    $sentencia->bind_param("s", $id_alumne);
+    $id_alumne = $_POST['alumne'];
+    $sentencia->execute();
+    $sentencia->bind_result($id_assignatura, $nom_assignatura, $curs_id);
+
+    while ($sentencia->fetch())
+    {
+        $nota = $_POST['nota'.$nom_assignatura.$id_assignatura];
+        $uf1 = $_POST['uf1'.$nom_assignatura.$id_assignatura];
+        $uf2 = $_POST['uf2'.$nom_assignatura.$id_assignatura];
+        $uf3 =  $_POST['uf3'.$nom_assignatura.$id_assignatura];
+        $uf4 = $_POST['uf4'.$nom_assignatura.$id_assignatura];
+        guardaNota($nota, $uf1, $uf2, $uf3, $uf4, $id_assignatura, $id_alumne, $curs_id);
+    }
+
 }
 
+function guardaNota($nota, $uf1, $uf2, $uf3, $uf4, $id_assignatura, $id_alumne, $curs_id){
+    try {
+        $gbd = new PDO ( 'mysql:host=localhost;dbname=ESCOLA_DB' , 'root' , 'adminuser' );
+    } catch ( Exception $e ) {
+        die( "problema de connexio: " . $e -> getMessage ());
+    }
+
+    $sentencia = $gbd -> prepare ( "INSERT INTO NOTA (ASSIGNATURA_ID, CURS_ID, ALUMNE_ID, NOTA, UF1, UF2, UF3, UF4) VALUES (:id_assignatura, :curs_id, :id_alumne, :nota, :uf1, :uf2, :uf3, :uf4)");
+
+    $sentencia -> bindParam ( ':id_assignatura', $id_assignatura );
+    $sentencia -> bindParam ( ':curs_id', $curs_id);
+    $sentencia -> bindParam ( ':id_alumne', $id_alumne );
+    $sentencia -> bindParam ( ':nota', $nota );
+    $sentencia -> bindParam ( ':uf1', $uf1);
+    $sentencia -> bindParam ( ':uf2', $uf2);
+    $sentencia -> bindParam ( ':uf3', $uf3);
+    $sentencia -> bindParam ( ':uf4', $uf4);
+    $sentencia -> execute ();
+}
 
 /*
 * Funcion alta de alumnos
@@ -118,6 +173,5 @@ function altaAsignatura(){
     $nom_assignatura = $_POST['name'];
     $nom_professor = $_POST['prof'];
     $sentencia -> execute ();
-
 }
 ?>
