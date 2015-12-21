@@ -74,11 +74,12 @@
                     $sentencia->bind_result($nom_alumne, $cognom1_alumne, $cognom2_alumne, $nom_assignatura, $nota, $uf1, $uf2, $uf3, $uf4, $id_nota);
                     while ($sentencia->fetch())
                     {
-                        $idCol = [];
-                        array_push($idCol, $uf1);
-                        array_push($idCol, $uf2);
-                        array_push($idCol, $uf3);
-                        array_push($idCol, $uf4);
+                        $idCol = [
+                            'uf1'=>$uf1,
+                            'uf2'=>$uf2,
+                            'uf3'=>$uf3,
+                            'uf4'=>$uf4
+                        ];
                         echo "<tr>
                             <th>".$nom_alumne." ".$cognom1_alumne." ".$cognom2_alumne."</th>
                             <th>".$nom_assignatura."</th>
